@@ -1,5 +1,4 @@
 from wire import Wire
-import tkinter
 import gate
 
 
