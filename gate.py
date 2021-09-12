@@ -63,7 +63,7 @@ class NotGate(Gate):
         super(NotGate, self).__init__(1, 1)
 
     def check_input(self):
-        if self.check_all_received:
+        if self.check_all_received():
             signal = not self.get_input_connector(0).get_content()
             self.reset_input()
             self.get_output_connector(0).set_content(signal)
