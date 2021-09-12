@@ -3,6 +3,7 @@ from connector import InputConnector, OutputConnector
 
 class Gate:
     def __init__(self, input_count, output_count):
+        self.id = hash(self)
         self.input_connector_count = input_count
         self.output_connector_count = output_count
         self.input_connectors = [InputConnector(self) for i in range(input_count)]
@@ -41,18 +42,45 @@ class UserInputBar(Gate):
 
 
 class UserOutputBar(Gate):
-    def __init__(self, connector_number, print_out=False):
+    def __init__(self, connector_number, print_out=False, print_format=0):
+        """print format 0: Boolean 1: binary 2: number in decimal"""
         super(UserOutputBar, self).__init__(connector_number, connector_number)
         self.connector_count = connector_number
         self.print_out_received = print_out
+        self.print_out_format = print_format
 
     def set_print(self, print_out):
         self.print_out_received = print_out
 
     def check_input(self):
         if self.check_all_received():
+            if self.print_out_received:
+                print("Output Bar #%s received: " % self.id, end="")
+                output = ""
+                if self.print_out_format == 2:
+                    output += "(base 10) "
+                    for i in range(self.connector_count-1, -1, -1):
+                        if self.get_input_connector(i).get_content():
+                            output += "1"
+                        else:
+                            output += "0"
+                    print(int(output, 2))
+                elif self.print_out_format == 1:
+                    output += "0b"
+                    for i in range(self.connector_count-1, -1, -1):
+                        if self.get_input_connector(i).get_content():
+                            output += "1"
+                        else:
+                            output += "0"
+                    print(output)
+                elif self.print_out_format == 0:
+                    print("\n")
+                    for i in range(self.connector_count):
+                        print("Connector #%s:%s" % (self.get_input_connector(i).id,
+                                                    self.get_input_connector(i).get_content()))
+
             for i in range(self.connector_count):
-                print(self.get_input_connector(i).get_content())
+                # print(self.get_input_connector(i).get_content())
                 self.get_output_connector(i).set_content(self.get_input_connector(i).get_content())
                 self.get_input_connector(i).reset()
                 self.get_output_connector(i).send_signal()
