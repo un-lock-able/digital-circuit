@@ -59,12 +59,14 @@ class UserOutputBar(Gate):
                 output = ""
                 if self.print_out_format == 2:
                     output += "(base 10) "
+                    temp = ""
                     for i in range(self.connector_count-1, -1, -1):
                         if self.get_input_connector(i).get_content():
-                            output += "1"
+                            temp += "1"
                         else:
-                            output += "0"
-                    print(int(output, 2))
+                            temp += "0"
+                    output += str(int(temp,2))
+                    print(output)
                 elif self.print_out_format == 1:
                     output += "0b"
                     for i in range(self.connector_count-1, -1, -1):
